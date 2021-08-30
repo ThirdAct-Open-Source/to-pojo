@@ -12,3 +12,4 @@ const myPojo = toPojo({
 ```
 
 ## Documentation
+See [https://thirdact-open-source.github.io/to-pojo/](https://thirdact-open-source.github.io/to-pojo/).
