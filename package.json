@@ -16,7 +16,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/znetstar/simple-mongoose-rest-interface"
+        "url": "git+https://github.com/ThirdAct-Open-Source/to-pojo"
     },
     "author": "Third Act Team <zach@thirdact.digital>",
     "license": "ISC",
