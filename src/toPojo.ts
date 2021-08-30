@@ -66,14 +66,14 @@ export class ToPojo<I,O> {
        */
       {
         match: (input: I) => typeof(input) === 'object' && typeof((input as any).toJSON) === 'function',
-        transform: (input: I, ...args: any[]) => (input as any).toJSON(...args)
+        transform: function (input: I, ...args: any[]) { return this.toPojo((input as any).toJSON(...args)); }
       },
       /**
        * If `toObject` is found, call them
        */
       {
         match: (input: I) => typeof(input) === 'object' && typeof((input as any).toObject) === 'function',
-        transform: (input: I, ...args: any[]) => (input as any).toObject(...args)
+        transform: function (input: I, ...args: any[]) { return this.toPojo((input as any).toObject(...args)); }
       },
       /**
        * If ObjectId is the constructor convert to string
@@ -99,8 +99,8 @@ export class ToPojo<I,O> {
    */
   public toPojo(input: I, options: ToPojoOptions<I, O> = this.DEFAULT_TO_POJO_OPTIONS): O {
     for (let {match, transform} of options.conversions) {
-      if (match(input)) {
-        return transform(input);
+      if (match.call(this, input)) {
+        return transform.call(this, input);
       }
     }
 
