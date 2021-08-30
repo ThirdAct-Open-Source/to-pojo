@@ -36,6 +36,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-ts');
   grunt.loadNpmTasks('grunt-typedoc');
   grunt.registerTask('docs', ['extraDocStuff', 'typedoc']);
-  grunt.registerTask('default', [ 'clean', 'ts:toPojo' ]);
+  grunt.registerTask('default', [ 'clean', 'ts:toPojo', 'docs' ]);
 
 };

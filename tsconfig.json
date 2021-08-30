@@ -15,5 +15,5 @@
     "moduleResolution": "Node",
     "esModuleInterop": true
   },
-  "files": [ "src/index.ts", "src/EncodeTools.ts", "src/EncodeToolsNative.ts" ]
+  "files": [ "src/index.ts", "src/toPojo.ts" ]
 }

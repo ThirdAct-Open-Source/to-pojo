@@ -10,3 +10,5 @@ const myPojo = toPojo({
   something: 'complex'
 });
 ```
+
+## Documentation
