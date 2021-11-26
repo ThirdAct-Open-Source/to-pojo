@@ -76,7 +76,7 @@ export class ToPojo<I,O> {
         match: makePrototypeMatcher<I>([ 'Binary' ]),
         transform: (input: I, ...args: any[]) => {
           debugger
-          return Buffer.from((input as any).buffer);
+          return Buffer.from((input as any).buffer).buffer;
         }
       },
       /**
