@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { Buffer } from 'buffer';
 
 /**
  * Function that will match input
@@ -62,6 +63,30 @@ export class ToPojo<I,O> {
         transform: (input: I) => null as any
       },
       /**
+       * If NumberDecimal is the constructor convert to number
+       */
+      {
+        match: makePrototypeMatcher<I>([ 'NumberDecimal' ]),
+        transform: (input: I, ...args: any[]) => Number((input as any).toString(...args))
+      },
+      /**
+       * If Binary convert to Buffer
+       */
+      {
+        match: makePrototypeMatcher<I>([ 'Binary' ]),
+        transform: (input: I, ...args: any[]) => {
+          debugger
+          return Buffer.from((input as any).buffer);
+        }
+      },
+      /**
+       * If ObjectId is the constructor convert to string
+       */
+      {
+        match: makePrototypeMatcher<I>([ 'ObjectId' ]),
+        transform: (input: I, ...args: any[]) => (input as any).toString(...args)
+      },
+      /**
        * If `toJSON` is found, call them
        */
       {
@@ -75,13 +100,6 @@ export class ToPojo<I,O> {
         match: (input: I) => typeof(input) === 'object' && typeof((input as any).toObject) === 'function',
         transform: function (input: I, ...args: any[]) { return this.toPojo((input as any).toObject(...args)); }
       },
-      /**
-       * If ObjectId is the constructor convert to string
-       */
-      {
-        match: makePrototypeMatcher<I>([ 'ObjectId' ]),
-        transform: (input: I, ...args: any[]) => (input as any).toString(...args)
-      }
     ],
     defaultTransform: (input: I) => _.cloneDeep(input) as unknown as O
   })
