@@ -1,6 +1,6 @@
 {
     "name": "@thirdact/to-pojo",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "A simple module that attempts to turn a complex javascript object into a simple one using pre-defined conversion methods.",
     "main": "lib/index.js",
     "scripts": {

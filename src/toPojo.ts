@@ -70,13 +70,18 @@ export class ToPojo<I,O> {
         transform: (input: I, ...args: any[]) => Number((input as any).toString(...args))
       },
       /**
-       * If Binary convert to Buffer
+       * If Binary convert to array of numbers
        */
       {
         match: makePrototypeMatcher<I>([ 'Binary' ]),
         transform: (input: I, ...args: any[]) => {
-          debugger
-          return Buffer.from((input as any).buffer).buffer;
+          return [...Buffer.from((input as any).buffer)];
+        }
+      },
+      {
+        match: makePrototypeMatcher<I>([ 'Buffer', 'ArrayBuffer', 'Uint8Array']),
+        transform: (input: I, ...args: any[]) => {
+          return [...Buffer.from((input as any))];
         }
       },
       /**
