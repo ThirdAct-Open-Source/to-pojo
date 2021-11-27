@@ -70,6 +70,13 @@ export class ToPojo<I,O> {
         transform: (input: I, ...args: any[]) => Number((input as any).toString(...args))
       },
       /**
+       * If ObjectId is the constructor convert to string
+       */
+      {
+        match: makePrototypeMatcher<I>([ 'ObjectId' ]),
+        transform: (input: I, ...args: any[]) => (input as any).toString(...args)
+      },
+      /**
        * If Binary convert to array of numbers
        */
       {
@@ -85,11 +92,11 @@ export class ToPojo<I,O> {
         }
       },
       /**
-       * If ObjectId is the constructor convert to string
+       * If `toObject` is found, call them
        */
       {
-        match: makePrototypeMatcher<I>([ 'ObjectId' ]),
-        transform: (input: I, ...args: any[]) => (input as any).toString(...args)
+        match: (input: I) => typeof(input) === 'object' && typeof((input as any).toObject) === 'function',
+        transform: function (input: I, ...args: any[]) { return this.toPojo((input as any).toObject(...args)); }
       },
       /**
        * If `toJSON` is found, call them
@@ -97,14 +104,7 @@ export class ToPojo<I,O> {
       {
         match: (input: I) => typeof(input) === 'object' && typeof((input as any).toJSON) === 'function',
         transform: function (input: I, ...args: any[]) { return this.toPojo((input as any).toJSON(...args)); }
-      },
-      /**
-       * If `toObject` is found, call them
-       */
-      {
-        match: (input: I) => typeof(input) === 'object' && typeof((input as any).toObject) === 'function',
-        transform: function (input: I, ...args: any[]) { return this.toPojo((input as any).toObject(...args)); }
-      },
+      }
     ],
     defaultTransform: (input: I) => _.cloneDeep(input) as unknown as O
   })
