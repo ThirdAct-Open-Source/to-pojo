@@ -66,7 +66,7 @@ export class ToPojo<I,O> {
        * If NumberDecimal is the constructor convert to number
        */
       {
-        match: makePrototypeMatcher<I>([ 'NumberDecimal' ]),
+        match: makePrototypeMatcher<I>([ 'NumberDecimal', 'Decimal128' ]),
         transform: (input: I, ...args: any[]) => Number((input as any).toString(...args))
       },
       /**
