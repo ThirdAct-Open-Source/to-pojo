@@ -57,13 +57,13 @@ export function makeBinaryEncoders<I extends Buffer|ArrayBuffer|Uint8Array|{ buf
     {
       match: makePrototypeMatcher<I>([ 'Binary' ]),
       transform: (input: I, ...args: any[]) => {
-        return EncodeTools.WithDefaults.encodeBuffer(Buffer.from((input as { buffer:  Buffer|ArrayBuffer|Uint8Array }).buffer));
+        return EncodeTools.WithDefaults.encodeBuffer(Buffer.from((input as { buffer:  Buffer|ArrayBuffer|Uint8Array }).buffer),encoding);
       }
     },
     {
       match: makePrototypeMatcher<I>([ 'Buffer', 'ArrayBuffer', 'Uint8Array']),
       transform: (input: I, ...args: any[]) => {
-        return  EncodeTools.WithDefaults.encodeBuffer(Buffer.from(input as Buffer|ArrayBuffer|Uint8Array));
+        return  EncodeTools.WithDefaults.encodeBuffer(Buffer.from(input as Buffer|ArrayBuffer|Uint8Array), encoding);
       }
     }
   ]
