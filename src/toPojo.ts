@@ -1,5 +1,10 @@
 import * as _ from 'lodash';
 import { Buffer } from 'buffer';
+import {
+  EncodeTools,
+  BinaryEncoding,
+  BinaryInputOutput
+} from '@znetstar/encode-tools/lib/EncodeTools';
 
 /**
  * Function that will match input
@@ -41,6 +46,27 @@ export function makePrototypeMatcher<I>(constructors: string[]|string): MatchFn<
   return (input: I): boolean => {
     return typeof(input) === 'object' && [].concat(constructors).includes(Object.getPrototypeOf(input as any).constructor.name);
   }
+}
+
+/**
+ * Returns two converters that internally encode binary as a format from `@znetstar/encode-tools`.
+ * @param encoding
+ */
+export function makeBinaryEncoders<I extends Buffer|ArrayBuffer|Uint8Array|{ buffer:  Buffer|ArrayBuffer|Uint8Array }>(encoding: BinaryEncoding): [Conversion<I,BinaryInputOutput>,Conversion<I,BinaryInputOutput>] {
+  return [
+    {
+      match: makePrototypeMatcher<I>([ 'Binary' ]),
+      transform: (input: I, ...args: any[]) => {
+        return EncodeTools.WithDefaults.encodeBuffer(Buffer.from((input as { buffer:  Buffer|ArrayBuffer|Uint8Array }).buffer));
+      }
+    },
+    {
+      match: makePrototypeMatcher<I>([ 'Buffer', 'ArrayBuffer', 'Uint8Array']),
+      transform: (input: I, ...args: any[]) => {
+        return  EncodeTools.WithDefaults.encodeBuffer(Buffer.from(input as Buffer|ArrayBuffer|Uint8Array));
+      }
+    }
+  ]
 }
 
 /**

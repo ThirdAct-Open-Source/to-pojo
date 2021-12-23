@@ -5,5 +5,6 @@ export {
   TransformFn,
   Conversion,
   ToPojoOptions,
-  makePrototypeMatcher
+  makePrototypeMatcher,
+  makeBinaryEncoders
 } from './toPojo';
