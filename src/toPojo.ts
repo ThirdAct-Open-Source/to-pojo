@@ -34,7 +34,7 @@ export interface ToPojoOptions<I,O> {
   /**
    * List of `Conversion` to attempt to match against, and if successful, transform.
    */
-  conversions?: Conversion<I, O>[]
+  conversions: Conversion<I, O>[]
 }
 
 /**
@@ -48,21 +48,33 @@ export function makePrototypeMatcher<I>(constructors: string[]|string): MatchFn<
 }
 
 /**
- * Returns two converters that internally encode binary as a format from `@znetstar/encode-tools`.
- * @param encoding
+ * Returns converters that will encode binary as a format from `@znetstar/encode-tools`.
+ * @param encoder `@znetstar/encode-tools` encoder
+ * @param encoding Encoding to pass to `@znetstar/encode-tools`
+ * @example
+ * (toPojo.toPojo(body, {
+ *   ...toPojo.DEFAULT_TO_POJO_OPTIONS,
+ *   conversions: [
+ *      ...makeBinaryEncoders('ascii85' as any),
+ *      ...(toPojo.DEFAULT_TO_POJO_OPTIONS.conversions || [])
+ *    ]
+ * }))
+ *
  */
-export function makeBinaryEncoders<I extends Buffer|ArrayBuffer|Uint8Array|{ buffer:  Buffer|ArrayBuffer|Uint8Array }>(encoder: IEncodeTools, encoding?: BinaryEncoding): [Conversion<I,BinaryInputOutput>,Conversion<I,BinaryInputOutput>] {
+export function makeBinaryEncoders<I, O>(encoder: IEncodeTools, encoding?: BinaryEncoding): [Conversion<I,O>,Conversion<I,O>] {
   return [
     {
       match: makePrototypeMatcher<I>([ 'Binary' ]),
       transform: (input: I, ...args: any[]) => {
-        return encoder.encodeBuffer(Buffer.from((input as { buffer:  Buffer|ArrayBuffer|Uint8Array }).buffer),encoding);
+        // @ts-ignore
+        return encoder.encodeBuffer(Buffer.from((input as { buffer:  Buffer|ArrayBuffer|Uint8Array }).buffer),encoding) as any;
       }
     },
     {
       match: makePrototypeMatcher<I>([ 'Buffer', 'ArrayBuffer', 'Uint8Array']),
       transform: (input: I, ...args: any[]) => {
-        return  encoder.encodeBuffer(Buffer.from(input as Buffer|ArrayBuffer|Uint8Array), encoding);
+        // @ts-ignore
+        return  encoder.encodeBuffer(Buffer.from(input as Buffer|ArrayBuffer|Uint8Array), encoding) as any;
       }
     }
   ]
@@ -145,8 +157,10 @@ export class ToPojo<I,O> {
    * @param input
    * @param options
    */
-  public toPojo(input: I, options: ToPojoOptions<I, O> = this.DEFAULT_TO_POJO_OPTIONS): O {
-    for (let {match, transform} of options.conversions) {
+  public toPojo(input: I, options: Partial<ToPojoOptions<I, O>> = this.DEFAULT_TO_POJO_OPTIONS): O {
+    const defaultTransform = (options.defaultTransform || this.DEFAULT_TO_POJO_OPTIONS.defaultTransform);
+    const conversions = (options.conversions || this.DEFAULT_TO_POJO_OPTIONS.conversions);
+    for (let {match, transform} of conversions) {
       if (match.call(this, input)) {
         return transform.call(this, input);
       }
@@ -171,7 +185,7 @@ export class ToPojo<I,O> {
       }
     }
 
-    return options.defaultTransform(input);
+    return defaultTransform(input);
   }
 }
 
@@ -186,7 +200,7 @@ export class ToPojo<I,O> {
  * @param input
  * @param options
  */
-export function toPojo<I,O>(input: I, options?: ToPojoOptions<I, O>): O {
+export function toPojo<I,O>(input: I, options?: Partial<ToPojoOptions<I, O>>): O {
   const instance = new ToPojo<I, O>();
 
   return instance.toPojo(input, options);
