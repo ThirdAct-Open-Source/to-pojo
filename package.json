@@ -1,6 +1,6 @@
 {
     "name": "@thirdact/to-pojo",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "description": "A simple module that attempts to turn a complex javascript object into a simple one using pre-defined conversion methods.",
     "main": "lib/index.js",
     "scripts": {
@@ -21,12 +21,15 @@
     "author": "Third Act Team <zach@thirdact.digital>",
     "license": "ISC",
     "dependencies": {
-        "@znetstar/encode-tools": "^1.0.1",
         "buffer": "^6.0.3",
         "lodash": "^4.17.21",
         "tslib": "^2.3.1"
     },
+    "peerDependencies": {
+      "@znetstar/encode-tools": "^1.x"
+    },
     "devDependencies": {
+        "@znetstar/encode-tools": "^1.x",
         "@types/bson": "^4.0.5",
         "@types/chai": "^4.2.21",
         "@types/chance": "^1.1.3",
