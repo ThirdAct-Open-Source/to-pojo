@@ -100,6 +100,30 @@ export class ToPojo<I,O> {
         transform: (input: I) => null as any
       },
       /**
+       * If Error serialize the error
+       */
+      {
+        match: (input: I) => input instanceof Error,
+        transform: (input: I, ...args: any[]) => {
+          const err = input as unknown as Error;
+
+          const props = Object.getOwnPropertyNames(err);
+
+          const output: any = {};
+
+          for (const key of props)
+            // @ts-ignore
+            output[key] = err[key];
+
+          return {
+            ...output,
+            name: err.name,
+            stack: err.stack,
+            message: err.message
+          }
+        }
+      },
+      /**
        * If NumberDecimal is the constructor convert to number
        */
       {

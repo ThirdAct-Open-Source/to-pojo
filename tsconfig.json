@@ -9,11 +9,11 @@
     "sourceMap": true,
     "target": "es2018",
     "rootDir": "src",
+    "esModuleInterop": true,
     "outDir": "lib",
     "downlevelIteration": true,
     "lib": [ "es2017", "DOM" ],
-    "moduleResolution": "Node",
-    "esModuleInterop": true
+    "moduleResolution": "Node"
   },
   "files": [ "src/index.ts", "src/toPojo.ts" ]
 }

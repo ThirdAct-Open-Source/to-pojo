@@ -165,6 +165,16 @@ describe('ToPojo', async function () {
       assert.isArray(val.foo);
       assert.deepEqual(val.foo, bufArr);
     });
+    it('errors should be serialized as objects', function () {
+      const toPojo = new ToPojo<any, any>();
+      const errMsg = chance.string();
+      class TestError extends Error { name = 'TestError'; constructor() { super(errMsg); } }
+      const testError = new TestError();
+      const obj = toPojo.toPojo({ testError });
+      assert.equal(testError.name, 'TestError');
+      assert.equal(testError.message, errMsg);
+      assert.equal(testError.stack, testError.stack);
+    });
   });
   describe('makeBinaryEncoders', function (){
     it('Buffer should be returned as an encoded representation of bytes', function () {
