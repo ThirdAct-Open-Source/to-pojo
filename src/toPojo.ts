@@ -43,7 +43,7 @@ export interface ToPojoOptions<I,O> {
  */
 export function makePrototypeMatcher<I>(constructors: string[]|string): MatchFn<I> {
   return (input: I): boolean => {
-    return typeof(input) === 'object' && [].concat(constructors).includes(Object.getPrototypeOf(input as any).constructor.name);
+    return typeof(input) === 'object' && input !== null && [].concat(constructors).includes(Object.getPrototypeOf(input as any).constructor.name);
   }
 }
 
