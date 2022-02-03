@@ -1,9 +1,5 @@
 import * as _ from 'lodash';
 import { Buffer } from 'buffer';
-import {
-  IEncodeTools,
-  BinaryInputOutput, BinaryEncoding
-} from '@znetstar/encode-tools/lib/IEncodeTools';
 
 /**
  * Function that will match input
@@ -61,7 +57,7 @@ export function makePrototypeMatcher<I>(constructors: string[]|string): MatchFn<
  * }))
  *
  */
-export function makeBinaryEncoders<I, O>(encoder: IEncodeTools, encoding?: BinaryEncoding): [Conversion<I,O>,Conversion<I,O>] {
+export function makeBinaryEncoders<I, O>(encoder: any, encoding?: any): [Conversion<I,O>,Conversion<I,O>] {
   return [
     {
       match: makePrototypeMatcher<I>([ 'Binary' ]),
